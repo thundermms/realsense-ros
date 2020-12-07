@@ -1,4 +1,4 @@
-FROM ros:melodic-ros-core
+FROM ros:melodic-perception-bionic
 
 ENV ROS_DISTRO melodic
 
@@ -8,20 +8,21 @@ RUN apt-get -q -qq update && \
   wget \
   python-rosinstall \
   python-catkin-tools \
-  ros-${ROS_DISTRO}-jsk-tools \
-  ros-${ROS_DISTRO}-rgbd-launch \
-  ros-${ROS_DISTRO}-image-transport-plugins \
-  ros-${ROS_DISTRO}-image-transport \
-  ros-melodic-ddynamic-reconfigure
+  ros-melodic-jsk-tools \
+  ros-melodic-image-transport-plugins \
+  ros-melodic-image-transport \
+  ros-melodic-ddynamic-reconfigure \
+  && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
-
-
-RUN echo 'deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main' || tee /etc/apt/sources.list.d/realsense-public.list && \ 
-    apt-key adv --keyserver keys.gnupg.net --recv-key C8B3A55A6F3EFCDE || apt-key adv --keyserver hkp://keys.gnupg.net:80 --recv-key C8B3A55A6F3EFCDE && \
-    add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main" && \
-    apt-get update -qq && \
-    apt-get install librealsense2-dkms --allow-unauthenticated -y && \
-    apt-get install librealsense2-dev --allow-unauthenticated -y
+WORKDIR /home/3rdparty
+RUN git clone https://github.com/IntelRealSense/librealsense.git 
+RUN apt-get -q -qq update && apt-get install -y libusb-1.0-0-dev
+RUN cd librealsense/ && mkdir build && cd build && \
+    cmake .. && \
+    make && \
+    make install
 
 WORKDIR /home/catkin_ws
 
