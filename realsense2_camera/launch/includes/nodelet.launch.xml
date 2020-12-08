@@ -7,7 +7,7 @@
   <arg name="tf_prefix"           default=""/>
   <arg name="json_file_path"      default=""/>
   <arg name="rosbag_filename"     default=""/>
-  <arg name="required"            default="false"/>
+  <arg name="required"            default="true"/>
   <arg name="output"              default="screen"/>  <!-- [ screen | log ]-->
 
   <arg name="fisheye_width"       default="0"/>
