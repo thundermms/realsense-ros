@@ -18,10 +18,12 @@ RUN apt-get -q -qq update && \
 
 WORKDIR /home/3rdparty
 RUN git clone https://github.com/IntelRealSense/librealsense.git 
-RUN apt-get -q -qq update && apt-get install -y libusb-1.0-0-dev
-RUN cd librealsense/ && mkdir build && cd build && \
-    cmake .. && \
-    make && \
+RUN apt-get -q -qq update && apt-get install -y libusb-1.0-0-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+WORKDIR /home/3rdparty/librealsense
+RUN ls /usr/src/ | grep linux-headers && ./scripts/patch-realsense-ubuntu-lts.sh
+RUN cd librealsense/ && git checkout v2.39.0 && mkdir build && cd build && \
+    cmake -DBUILD_EXAMPLES=false -DBUILD_GRAPHICAL_EXAMPLES=false .. && \
+    make -j6 && \
     make install
 
 WORKDIR /home/catkin_ws
