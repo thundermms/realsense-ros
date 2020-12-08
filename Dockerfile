@@ -20,9 +20,8 @@ WORKDIR /home/3rdparty
 RUN git clone https://github.com/IntelRealSense/librealsense.git 
 RUN apt-get -q -qq update && apt-get install -y libusb-1.0-0-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
 WORKDIR /home/3rdparty/librealsense
-RUN ./scripts/patch-realsense-ubuntu-lts.sh
 RUN cd librealsense/ && git checkout v2.39.0 && mkdir build && cd build && \
-    cmake -DBUILD_EXAMPLES=false -DBUILD_GRAPHICAL_EXAMPLES=false .. && \
+    cmake ../ -DBUILD_EXAMPLES=false -DFORCE_LIBUVC=true -DBUILD_WITH_CUDA=false -DCMAKE_BUILD_TYPE=release -DBUILD_PYTHON_BINDINGS=bool:true && \
     make -j6 && \
     make install
 
