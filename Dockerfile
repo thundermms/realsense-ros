@@ -39,8 +39,9 @@ WORKDIR /home/catkin_ws
 
 COPY realsense2_camera src/realsense2_camera
 COPY realsense2_description src/realsense2_description
-RUN /ros_entrypoint.sh catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release && \
-    sed -i '$isource "/home/catkin_ws/devel/setup.bash"' /ros_entrypoint.sh
+RUN /ros_entrypoint.sh catkin_make install -DCMAKE_INSTALL_PREFIX="/usr/local/realsense"  -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release && \
+    sed -i '$isource "/usr/local/realsense/setup.bash"' /ros_entrypoint.sh && \
+    rm -rf /home/catkin_ws
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
