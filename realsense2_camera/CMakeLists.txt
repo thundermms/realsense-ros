@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     sensor_msgs
     std_msgs
+    std_srvs
     nodelet
     cv_bridge
     image_transport
@@ -40,7 +41,7 @@ endif()
 if (WIN32)
 find_package(realsense2 CONFIG REQUIRED)
 else()
-find_package(realsense2 2.40.0)
+find_package(realsense2 2.50.0)
 endif()
 
 if(NOT realsense2_FOUND)
@@ -68,7 +69,13 @@ add_message_files(
     FILES
     IMUInfo.msg
     Extrinsics.msg
+    Metadata.msg
     )
+
+add_service_files(
+    FILES
+    DeviceInfo.srv
+)
 
 generate_messages(
     DEPENDENCIES
@@ -85,6 +92,7 @@ include_directories(
 
 # RealSense ROS Node
 catkin_package(
+    INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
     CATKIN_DEPENDS message_runtime roscpp sensor_msgs std_msgs
     nodelet
@@ -95,10 +103,10 @@ catkin_package(
     )
 
 add_library(${PROJECT_NAME}
-    include/constants.h
-    include/realsense_node_factory.h
-    include/base_realsense_node.h
-    include/t265_realsense_node.h
+    include/realsense2_camera/constants.h
+    include/realsense2_camera/realsense_node_factory.h
+    include/realsense2_camera/base_realsense_node.h
+    include/realsense2_camera/t265_realsense_node.h
     src/realsense_node_factory.cpp
     src/base_realsense_node.cpp
     src/t265_realsense_node.cpp
@@ -133,7 +141,7 @@ install(TARGETS ${PROJECT_NAME}
     )
 
 # Install header files
-install(DIRECTORY include/
+install(DIRECTORY include/realsense2_camera
     DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
     )
 
