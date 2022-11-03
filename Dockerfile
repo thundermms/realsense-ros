@@ -29,7 +29,7 @@ RUN apt-get -q -qq update && \
 
 WORKDIR /home/3rdparty/librealsense
 RUN git clone https://github.com/IntelRealSense/librealsense.git . && \
-    git checkout v2.40.0 && mkdir build && cd build && \
+    git checkout v2.51.1 && mkdir build && cd build && \
     cmake ../ -DBUILD_EXAMPLES=false -DFORCE_LIBUVC=true -DBUILD_WITH_CUDA=false -DCMAKE_BUILD_TYPE=release -DBUILD_PYTHON_BINDINGS=bool:true && \
     make -j8 && \
     make install && \
