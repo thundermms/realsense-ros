@@ -968,6 +968,8 @@ void BaseRealSenseNode::setupPublishers()
     {
         if (_enable[stream])
         {
+            // double min_freq_percentage = 80.0;  // Custom minimum threshold as a percentage
+            // double max_freq_percentage = 120.0;  // Custom maximum threshold as a percentage
             std::stringstream image_raw, camera_info, topic_metadata;
             bool rectified_image = false;
             if (stream == DEPTH || stream == CONFIDENCE || stream == INFRA1 || stream == INFRA2)
@@ -977,8 +979,10 @@ void BaseRealSenseNode::setupPublishers()
             image_raw << stream_name << "/image_" << ((rectified_image)?"rect_":"") << "raw";
             camera_info << stream_name << "/camera_info";
             topic_metadata << stream_name << "/metadata";
-
-            std::shared_ptr<FrequencyDiagnostics> frequency_diagnostics(new FrequencyDiagnostics(_fps[stream], stream_name, _serial_no));
+             // Convert percentages to actual frequency values
+            // double min_freq_ = _fps[stream] * 0.8;
+            // double max_freq_ = _fps[stream] * 1.2;
+            std::shared_ptr<FrequencyDiagnostics> frequency_diagnostics(new FrequencyDiagnostics(_fps[stream], 12, 18, stream_name, _serial_no));
             _image_publishers[stream] = {image_transport.advertise(image_raw.str(), 1), frequency_diagnostics};
             _info_publisher[stream] = _node_handle.advertise<sensor_msgs::CameraInfo>(camera_info.str(), 1);
             _metadata_publishers[stream] = std::make_shared<ros::Publisher>(_node_handle.advertise<realsense2_camera::Metadata>(topic_metadata.str(), 1));
@@ -990,7 +994,10 @@ void BaseRealSenseNode::setupPublishers()
                 aligned_camera_info << "aligned_depth_to_" << stream_name << "/camera_info";
 
                 std::string aligned_stream_name = "aligned_depth_to_" + stream_name;
-                std::shared_ptr<FrequencyDiagnostics> frequency_diagnostics(new FrequencyDiagnostics(_fps[stream], aligned_stream_name, _serial_no));
+                // Convert percentages to actual frequency values
+                // double min_freq_ = _fps[stream] * 0.8;
+                // double max_freq_ = _fps[stream] * 1.2;
+                std::shared_ptr<FrequencyDiagnostics> frequency_diagnostics(new FrequencyDiagnostics(_fps[stream],_fps[stream] * 0.8, _fps[stream] * 1.2, aligned_stream_name, _serial_no));
                 _depth_aligned_image_publishers[stream] = {image_transport.advertise(aligned_image_raw.str(), 1), frequency_diagnostics};
                 _depth_aligned_info_publisher[stream] = _node_handle.advertise<sensor_msgs::CameraInfo>(aligned_camera_info.str(), 1);
             }
