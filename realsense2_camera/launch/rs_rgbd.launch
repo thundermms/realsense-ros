@@ -133,7 +133,7 @@ Processing enabled by this node:
       <arg name="fisheye_width"            value="$(arg fisheye_width)"/>
       <arg name="fisheye_height"           value="$(arg fisheye_height)"/>
       <arg name="enable_fisheye"           value="$(arg enable_fisheye)"/>
-
+      <arg name="initial_reset"            value="$(arg initial_reset)"/>
       <arg name="depth_width"              value="$(arg depth_width)"/>
       <arg name="depth_height"             value="$(arg depth_height)"/>
       <arg name="enable_depth"             value="$(arg enable_depth)"/>
