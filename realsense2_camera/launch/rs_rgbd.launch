@@ -50,7 +50,7 @@ Processing enabled by this node:
   <arg name="serial_no"           default="$(env RS2_SERIAL_NO)"/>
   <arg name="usb_port_id"         default=""/>
   <arg name="device_type"         default=""/>
-  <arg name="json_file_path"      default=""/>
+  <arg name="json_file_path"      default="/root/preset.json"/>
 
   <arg name="fisheye_width"       default="640"/>
   <arg name="fisheye_height"      default="480"/>
