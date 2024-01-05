@@ -26,12 +26,16 @@ namespace realsense2_camera
 {
     struct FrequencyDiagnostics
     {
-      FrequencyDiagnostics(double expected_frequency, std::string name, std::string hardware_id) :
+      FrequencyDiagnostics(double expected_frequency, double min_freq, double max_freq, std::string name, std::string hardware_id) :
         expected_frequency_(expected_frequency),
-        frequency_status_(diagnostic_updater::FrequencyStatusParam(&expected_frequency_, &expected_frequency_)),
+        min_freq_(min_freq),
+        max_freq_(max_freq),
+        frequency_status_(diagnostic_updater::FrequencyStatusParam(&min_freq_, &max_freq_,0.0,5)),
         diagnostic_updater_(ros::NodeHandle(), ros::NodeHandle("~"), ros::this_node::getName() + "_" + name)
       {
         ROS_INFO("Expected frequency for %s = %.5f", name.c_str(), expected_frequency_);
+        ROS_INFO("Expected maximum frequency for %s = %.5f", name.c_str(), max_freq_);
+        ROS_INFO("Expected minimum frequency for %s = %.5f", name.c_str(), min_freq_);
         diagnostic_updater_.setHardwareID(hardware_id);
         diagnostic_updater_.add(frequency_status_);
       }
@@ -45,8 +49,9 @@ namespace realsense2_camera
       {
         diagnostic_updater_.update();
       }
-
       double expected_frequency_;
+      double min_freq_;
+      double max_freq_;
       diagnostic_updater::FrequencyStatus frequency_status_;
       diagnostic_updater::Updater diagnostic_updater_;
     };

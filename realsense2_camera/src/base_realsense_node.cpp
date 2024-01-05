@@ -864,8 +864,10 @@ void BaseRealSenseNode::setupPublishers()
             std::string stream_name(STREAM_NAME(stream));
             image_raw << stream_name << "/image_" << ((rectified_image)?"rect_":"") << "raw";
             camera_info << stream_name << "/camera_info";
-
-            std::shared_ptr<FrequencyDiagnostics> frequency_diagnostics(new FrequencyDiagnostics(_fps[stream], stream_name, _serial_no));
+            // Convert percentages to actual frequency values
+            double min_freq_ = _fps[stream] * 0.8;
+            double max_freq_ = _fps[stream] * 1.2;            
+            std::shared_ptr<FrequencyDiagnostics>frequency_diagnostics(new FrequencyDiagnostics(_fps[stream], min_freq_, max_freq_, stream_name, _serial_no));
             _image_publishers[stream] = {image_transport.advertise(image_raw.str(), 1), frequency_diagnostics};
             _info_publisher[stream] = _node_handle.advertise<sensor_msgs::CameraInfo>(camera_info.str(), 1);
 
@@ -876,7 +878,9 @@ void BaseRealSenseNode::setupPublishers()
                 aligned_camera_info << "aligned_depth_to_" << stream_name << "/camera_info";
 
                 std::string aligned_stream_name = "aligned_depth_to_" + stream_name;
-                std::shared_ptr<FrequencyDiagnostics> frequency_diagnostics(new FrequencyDiagnostics(_fps[stream], aligned_stream_name, _serial_no));
+                double min_freq_ = _fps[stream] * 0.8;
+                double max_freq_ = _fps[stream] * 1.2;
+                std::shared_ptr<FrequencyDiagnostics>frequency_diagnostics(new FrequencyDiagnostics(_fps[stream], min_freq_, max_freq_, stream_name, _serial_no));
                 _depth_aligned_image_publishers[stream] = {image_transport.advertise(aligned_image_raw.str(), 1), frequency_diagnostics};
                 _depth_aligned_info_publisher[stream] = _node_handle.advertise<sensor_msgs::CameraInfo>(aligned_camera_info.str(), 1);
             }
